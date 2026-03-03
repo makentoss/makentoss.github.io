@@ -37,9 +37,12 @@
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
         @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+        
+        /* New Bouncy Toast Animation */
         @keyframes toastIn {
-            0% { transform: translate(-50%, -100%); opacity: 0; }
-            100% { transform: translate(-50%, 20px); opacity: 1; }
+            0% { transform: translate(-50%, -100px) scale(0.8); opacity: 0; }
+            60% { transform: translate(-50%, 25px) scale(1.05); opacity: 1; }
+            100% { transform: translate(-50%, 20px) scale(1); opacity: 1; }
         }
 
         /* --- UI Elements --- */
@@ -67,23 +70,34 @@
             animation: goldGlow 3s ease-in-out infinite; line-height: 1;
         }
 
-        /* --- Toast Notification --- */
+        /* --- Upgraded Toast Notification --- */
         #toast {
             position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-            background: var(--gold); color: black; padding: 12px 25px;
+            background: rgba(0, 0, 0, 0.8); color: var(--gold); padding: 15px 30px;
             border-radius: 50px; font-weight: 800; z-index: 3000;
-            display: none; animation: toastIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; align-items: center; gap: 10px;
+            border: 1px solid var(--gold); box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
         }
+        .toast-show { animation: toastIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards; }
 
         /* --- Buttons --- */
         .btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 25px; }
-        .btn { padding: 18px; text-decoration: none; border-radius: 50px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; cursor: pointer; border: none; font-size: 1rem; }
+        .btn { padding: 18px; text-decoration: none; border-radius: 50px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; border: none; font-size: 1rem; }
         .btn svg { width: 22px; height: 22px; fill: currentColor; }
         .btn-discord { background: #5865F2; color: white; }
         .btn-market { background: linear-gradient(45deg, #ffd700, #ff9900); color: #000; overflow: hidden; position: relative; }
         .btn-tutorial { background: rgba(255,255,255,0.05); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
         .btn:hover { transform: scale(1.03); filter: brightness(1.1); }
+        
+        /* New: Button Click Glow Effect */
+        .btn-click-fx {
+            transform: scale(0.95) !important;
+            box-shadow: 0 0 30px var(--gold), inset 0 0 20px rgba(255, 215, 0, 0.5) !important;
+            border: 2px solid var(--gold) !important;
+            color: white !important;
+            background: rgba(255, 215, 0, 0.2) !important;
+        }
 
         /* --- Overlays --- */
         .overlay { 
@@ -110,10 +124,15 @@
         .discount-badge { background: #ff4444; color: white; padding: 2px 8px; border-radius: 5px; font-size: 0.75rem; margin-right: 10px; font-weight: 800; }
         .old-price { text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 5px; }
 
-        /* --- Screenshot Stack --- */
+        /* --- Screenshot Stack (Glowing Borders Added) --- */
         .screenshot-stack { position: fixed; bottom: 25px; left: 25px; display: flex; flex-direction: column-reverse; gap: 12px; z-index: 50; }
-        .ss-thumb { width: 150px; height: 85px; border-radius: 12px; border: 2px solid rgba(255,215,0,0.3); cursor: pointer; transition: 0.4s; object-fit: cover; }
-        .ss-thumb:hover { transform: scale(1.1) translateX(15px); border-color: #ffd700; }
+        .ss-thumb { 
+            width: 150px; height: 85px; border-radius: 12px; 
+            border: 2px solid var(--gold); /* Golden Border */
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); /* Glowing */
+            cursor: pointer; transition: 0.4s; object-fit: cover; 
+        }
+        .ss-thumb:hover { transform: scale(1.1) translateX(15px); box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); }
 
         /* --- FAQ Trigger --- */
         .faq-trigger { position: fixed; bottom: 30px; right: 30px; background: rgba(0,0,0,0.5); padding: 12px 30px; border-radius: 50px; font-weight: 700; cursor: pointer; color: #ffd700; border: 1px solid rgba(255,215,0,0.3); z-index: 50; transition: 0.3s; }
@@ -134,7 +153,7 @@
         .why-card { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,215,0,0.15); font-size: 0.8rem; backdrop-filter: blur(10px); }
         .why-card b { color: #ffd700; display: block; margin-bottom: 3px; }
 
-        /* --- MOBILE RESPONSIVENESS FIXES --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             h1 { font-size: 4rem; }
             .box { padding: 30px 20px; }
@@ -151,7 +170,10 @@
 </head>
 <body>
 
-    <div id="toast">COPIED TO CLIPBOARD!</div>
+    <div id="toast">
+        <svg viewBox="0 0 24 24" style="width:24px; fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        COPIED TO CLIPBOARD
+    </div>
 
     <div class="particles" id="particle-container"></div>
 
@@ -234,7 +256,7 @@
             </div>
             <div id="tText" style="text-align:left; font-size:0.95rem; line-height:1.7; min-height:80px;"></div>
             <div id="hostsBox">91.134.85.13 growtopia1.com<br>91.134.85.13 growtopia2.com<br>91.134.85.13 www.growtopia1.com<br>91.134.85.13 www.growtopia2.com</div>
-            <button id="actionBtn" class="btn" style="background:#ffd700; color:#000; width:100%; margin-top:20px; font-weight:800;"></button>
+            <button id="actionBtn" class="btn" style="background:rgba(255,215,0,0.1); border: 1px solid #ffd700; color:#ffd700; width:100%; margin-top:20px; font-weight:800;"></button>
         </div>
     </div>
 
@@ -251,7 +273,7 @@
     <div id="imgViewer" onclick="this.style.display='none'" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; display:none; align-items:center; justify-content:center;"><img id="fullImg" style="max-width:90%; max-height:90%; border:3px solid #ffd700; border-radius:15px; box-shadow:0 0 50px rgba(255,215,0,0.3);"></div>
 
     <script>
-        // --- NATIVE SOUND ENGINE ---
+        // --- NEW CLICKY SOUND (Satisfying Keyboard Pop) ---
         let audioCtx;
         function playClickSound() {
             try {
@@ -261,34 +283,36 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 
-                osc.type = 'sine';
-                // Starts at a high pitch and quickly drops to create a satisfying "pop"
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.05);
+                osc.type = 'triangle'; // Gives a sharp, mechanical click sound
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.015); // Extremely fast drop = pop
                 
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime); // Keep volume balanced
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.015);
                 
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.05);
-            } catch(e) { console.log("Audio not supported"); }
+                osc.stop(audioCtx.currentTime + 0.02);
+            } catch(e) { }
         }
 
-        // Attach sound to anything clickable automatically
+        // Attach sound to clickable elements
         document.addEventListener('click', function(e) {
             if (e.target.closest('.btn, .pill, .close-x, .ss-thumb, .faq-trigger, .shop-btn')) {
                 playClickSound();
             }
         });
 
-        // --- TOAST NOTIFICATION ---
+        // --- ENHANCED TOAST NOTIFICATION ---
         function showToast() {
             const t = document.getElementById('toast');
-            t.style.display = 'block';
-            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; t.style.opacity = '1'; }, 500); }, 2500);
+            t.style.display = 'flex';
+            t.classList.add('toast-show');
+            setTimeout(() => { 
+                t.style.opacity = '0'; 
+                setTimeout(() => { t.style.display = 'none'; t.style.opacity = '1'; t.classList.remove('toast-show'); }, 500); 
+            }, 2500);
         }
 
         // --- PARTICLES ---
@@ -303,7 +327,6 @@
             container.appendChild(p);
         }
 
-        // --- UI LOGIC ---
         let cL = 'en', cD = 'pc';
         const tutPath = "<code>C:\\Windows\\System32\\drivers\\etc</code>";
         
@@ -333,16 +356,26 @@
             if(cD === 'pc') {
                 document.getElementById('tText').innerHTML = tuts[cL];
                 h.style.display = 'block';
-                b.innerText = "COPY IPs";
-                b.onclick = () => { 
+                b.innerHTML = "COPY IPs";
+                
+                // Copy Action with Button Glow
+                b.onclick = function() { 
                     navigator.clipboard.writeText("91.134.85.13 growtopia1.com\n91.134.85.13 growtopia2.com\n91.134.85.13 www.growtopia1.com\n91.134.85.13 www.growtopia2.com"); 
-                    showToast(); // Triggers the visual toast instead of changing button text
+                    showToast(); 
+                    
+                    // Trigger Button Glow Animation
+                    this.classList.add('btn-click-fx');
+                    setTimeout(() => { this.classList.remove('btn-click-fx'); }, 200);
                 };
             } else {
                 document.getElementById('tText').innerHTML = mobileTuts[cL][cD];
                 h.style.display = 'none';
-                b.innerText = "GET HOSTS LINK";
-                b.onclick = () => window.open(cD === 'android' ? "https://dash.gtps.cloud/android/50" : "https://dash.gtps.cloud/ios/50");
+                b.innerHTML = "GET HOSTS LINK";
+                b.onclick = function() { 
+                    window.open(cD === 'android' ? "https://dash.gtps.cloud/android/50" : "https://dash.gtps.cloud/ios/50"); 
+                    this.classList.add('btn-click-fx');
+                    setTimeout(() => { this.classList.remove('btn-click-fx'); }, 200);
+                };
             }
         }
 
