@@ -9,7 +9,7 @@
         * { box-sizing: border-box; }
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; -webkit-font-smoothing: antialiased; }
         body { 
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('background.png') no-repeat center center fixed; 
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background.png') no-repeat center center fixed; 
             background-size: cover; color: white; font-family: 'Poppins', sans-serif; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
@@ -21,7 +21,7 @@
             50% { filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.9)) drop-shadow(4px 4px 0px rgba(0,0,0,0.6)); } 
         }
         @keyframes boardPulse {
-            0%, 100% { border-color: rgba(255, 215, 0, 0.3); box-shadow: 0 0 20px rgba(255, 215, 0, 0.1); }
+            0%, 100% { border-color: rgba(255, 215, 0, 0.2); box-shadow: 0 0 20px rgba(255, 215, 0, 0.1); }
             50% { border-color: rgba(255, 215, 0, 0.8); box-shadow: 0 0 40px rgba(255, 215, 0, 0.3); }
         }
         @keyframes drift {
@@ -37,11 +37,15 @@
 
         .main-container { display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 10; animation: float 6s ease-in-out infinite; }
         
-        /* Glass Board Style */
+        /* THE GLASS STYLE - Applied to ALL Boards */
         .glass-board {
-            background: rgba(255, 255, 255, 0.12); border: 2px solid rgba(255, 215, 0, 0.3); 
-            border-radius: 50px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.12) !important; 
+            border: 2px solid rgba(255, 215, 0, 0.3); 
+            border-radius: 50px; 
+            backdrop-filter: blur(25px) !important; 
+            -webkit-backdrop-filter: blur(25px) !important;
             animation: boardPulse 4s ease-in-out infinite;
+            position: relative;
         }
 
         .box { padding: 40px 60px; text-align: center; width: 480px; }
@@ -58,32 +62,33 @@
         .btn { padding: 18px; text-decoration: none; border-radius: 50px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; cursor: pointer; border: none; font-size: 1rem; }
         .btn svg { width: 22px; height: 22px; fill: currentColor; }
         .btn-discord { background: #5865F2; color: white; }
-        .btn-market { background: linear-gradient(45deg, #ffd700, #ff9900); color: #000; position: relative; overflow: hidden; }
+        .btn-market { background: linear-gradient(45deg, #ffd700, #ff9900); color: #000; overflow: hidden; position: relative; }
         .btn-tutorial { background: rgba(255,255,255,0.05); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
         .btn:hover { transform: scale(1.03); filter: brightness(1.1); }
 
         /* --- Overlays --- */
         .overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            background: rgba(0,0,0,0.4); /* Darkens bg slightly but stays clear */
             z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.4s; 
         }
-        .close-x { position: absolute; top: 30px; right: 40px; font-size: 3rem; cursor: pointer; color: #ffd700; }
+        .close-x { position: absolute; top: 30px; right: 40px; font-size: 3.5rem; cursor: pointer; color: #ffd700; z-index: 1100; transition: 0.3s; }
+        .close-x:hover { transform: rotate(90deg) scale(1.2); }
 
-        /* --- Market Style --- */
+        /* --- Market Shop Buttons --- */
         .shop-btn { 
-            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,215,0,0.2); color: white; 
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,215,0,0.2); color: white; 
             padding: 20px; border-radius: 25px; display: flex; justify-content: space-between; 
             align-items: center; text-decoration: none; margin-bottom: 12px; transition: 0.3s;
             position: relative; overflow: hidden;
         }
         .shop-btn::after {
             content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
             transform: skewX(-25deg); animation: shine 3s infinite;
         }
-        .shop-btn:hover { border-color: #ffd700; transform: translateX(10px); background: rgba(255,215,0,0.1); }
-        .discount-badge { background: #ff4444; color: white; padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; margin-right: 10px; }
+        .shop-btn:hover { border-color: #ffd700; transform: translateX(10px); background: rgba(255,215,0,0.15); }
+        .discount-badge { background: #ff4444; color: white; padding: 2px 8px; border-radius: 5px; font-size: 0.75rem; margin-right: 10px; font-weight: 800; }
         .old-price { text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 5px; }
 
         /* --- Screenshot Stack --- */
@@ -95,13 +100,13 @@
         .faq-trigger { position: fixed; bottom: 30px; right: 30px; background: rgba(0,0,0,0.5); padding: 12px 30px; border-radius: 50px; font-weight: 700; cursor: pointer; color: #ffd700; border: 1px solid rgba(255,215,0,0.3); z-index: 50; transition: 0.3s; }
         .faq-trigger:hover { background: #ffd700; color: #000; }
 
-        /* --- Tutorial Pills --- */
+        /* --- Tutorial Elements --- */
         .pill-group { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,215,0,0.2); padding: 8px 18px; border-radius: 50px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; color: white; }
-        .pill.active { background: #ffd700; color: #000; font-weight: 800; }
+        .pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,215,0,0.2); padding: 8px 18px; border-radius: 50px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; color: white; transition: 0.3s; }
+        .pill.active { background: #ffd700; color: #000; font-weight: 800; border-color: #ffd700; }
+        #hostsBox { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; font-family: monospace; font-size: 0.75rem; color: #ffd700; margin-top: 15px; border-left: 3px solid #ffd700; display: none; text-align: left; }
 
-        #hostsBox { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 15px; font-family: monospace; font-size: 0.75rem; color: #ffd700; margin-top: 15px; border-left: 3px solid #ffd700; display: none; text-align: left; }
-
+        /* Why Play Section (Unchanged style as requested) */
         .why-play { width: 560px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; z-index: 10; }
         .why-card { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,215,0,0.15); font-size: 0.8rem; backdrop-filter: blur(10px); }
         .why-card b { color: #ffd700; display: block; margin-bottom: 3px; }
@@ -151,17 +156,17 @@
 
     <div id="marketOverlay" class="overlay">
         <span class="close-x" onclick="toggleOverlay('marketOverlay', false)">&times;</span>
-        <div class="glass-board" style="padding:40px; width:450px;">
-            <h2 style="font-family:'Fredoka One'; color:#ffd700; text-align:center; margin-bottom:25px;">OFFICIAL MARKET</h2>
+        <div class="glass-board" style="padding:45px; width:480px; text-align:center;">
+            <h2 style="font-family:'Fredoka One'; color:#ffd700; font-size:2.2rem; margin-bottom:30px;">PREMIUM MARKET</h2>
             <a href="https://ko-fi.com/c/78a8fe7648" target="_blank" class="shop-btn">
-                <span>10x PWLs</span> <b style="color:#ffd700;">€10.00</b>
+                <span>10x World Locks</span> <b style="color:#ffd700;">€10.00</b>
             </a>
             <a href="https://ko-fi.com/c/4e2ec675f5" target="_blank" class="shop-btn">
-                <span>50x PWLs</span> 
+                <span>50x World Locks</span> 
                 <span><span class="discount-badge">SAVE 30%</span><span class="old-price">€50.00</span><b style="color:#ffd700;">€34.99</b></span>
             </a>
             <a href="https://ko-fi.com/c/7110f4d762" target="_blank" class="shop-btn">
-                <span>100x PWLs</span>
+                <span>100x World Locks</span>
                 <span><span class="discount-badge">SAVE 50%</span><span class="old-price">€100.00</span><b style="color:#ffd700;">€49.99</b></span>
             </a>
         </div>
@@ -169,13 +174,13 @@
 
     <div id="howOverlay" class="overlay">
         <span class="close-x" onclick="toggleOverlay('howOverlay', false)">&times;</span>
-        <div class="glass-board" style="padding:40px; width:520px; text-align:center;">
-            <h2 style="font-family:'Fredoka One'; color:#ffd700;">SETUP GUIDE</h2>
+        <div class="glass-board" style="padding:45px; width:540px; text-align:center;">
+            <h2 style="font-family:'Fredoka One'; color:#ffd700; font-size:2rem; margin-bottom:20px;">SETUP GUIDE</h2>
             <div class="pill-group">
-                <div class="pill lang active" onclick="setL('en',this)">EN</div>
-                <div class="pill lang" onclick="setL('id',this)">ID</div>
-                <div class="pill lang" onclick="setL('lt',this)">LT</div>
-                <div class="pill lang" onclick="setL('ru',this)">RU</div>
+                <div class="pill lang active" onclick="setL('en',this)">🇺🇸 EN</div>
+                <div class="pill lang" onclick="setL('id',this)">🇮🇩 ID</div>
+                <div class="pill lang" onclick="setL('lt',this)">🇱🇹 LT</div>
+                <div class="pill lang" onclick="setL('ru',this)">🇷🇺 RU</div>
             </div>
             <div class="pill-group">
                 <div class="pill dev active" onclick="setD('pc',this)">
@@ -188,7 +193,7 @@
                     <svg viewBox="0 0 24 24"><path d="M18.7 19.5c-.8 1.2-1.7 2.4-3.1 2.5-1.3 0-1.8-.8-3.3-.8s-2 .8-3.3.8-2.3-1.3-3.1-2.5c-1.7-2.5-3-7-1.3-10.1.9-1.5 2.4-2.5 4.1-2.5 1.3 0 2.5.9 3.3.9.8 0 2.3-1.1 3.8-.9.7 0 2.5.3 3.6 2-.1.1-2.2 1.3-2.2 3.8.1 3 2.7 4 2.7 4.1-.1.1-.5 1.5-1.4 2.9zm-5.7-16c.7-.8 1.9-1.5 2.9-1.5.1 1.2-.3 2.4-1 3.2-.7.8-1.8 1.5-3 1.4-.1-1.1.4-2.3 1.1-3.1z"/></svg> APPLE
                 </div>
             </div>
-            <div id="tText" style="text-align:left; font-size:0.9rem; line-height:1.7;"></div>
+            <div id="tText" style="text-align:left; font-size:0.95rem; line-height:1.7; min-height:80px;"></div>
             <div id="hostsBox">91.134.85.13 growtopia1.com<br>91.134.85.13 growtopia2.com<br>91.134.85.13 www.growtopia1.com<br>91.134.85.13 www.growtopia2.com</div>
             <button id="actionBtn" class="btn" style="background:#ffd700; color:#000; width:100%; margin-top:20px; font-weight:800;"></button>
         </div>
@@ -196,16 +201,18 @@
 
     <div id="faqOverlay" class="overlay">
         <span class="close-x" onclick="toggleOverlay('faqOverlay', false)">&times;</span>
-        <div class="glass-board" style="padding:40px; width:450px; text-align:left;">
-            <h2 style="font-family:'Fredoka One'; color:#ffd700; text-align:center;">FAQ</h2>
-            <p><b>Is the server 24/7?</b><br>Yes, hosted on a high-speed VPS.</p>
-            <p><b>How to get PWLs?</b><br>Manual delivery by admins after shop purchase.</p>
+        <div class="glass-board" style="padding:45px; width:480px; text-align:left;">
+            <h2 style="font-family:'Fredoka One'; color:#ffd700; text-align:center; margin-bottom:20px;">FREQUENT QUESTIONS</h2>
+            <p><b>Is GTGT safe?</b><br>Yes. We use industry-standard encryption and never store user passwords.</p>
+            <p><b>When do I get my locks?</b><br>Orders are processed manually by staff. Usually within 5-15 minutes.</p>
+            <p><b>How many players?</b><br>We have a growing community with events every weekend!</p>
         </div>
     </div>
 
-    <div id="imgViewer" onclick="this.style.display='none'" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; display:none; align-items:center; justify-content:center;"><img id="fullImg" style="max-width:90%; max-height:90%; border:2px solid #ffd700;"></div>
+    <div id="imgViewer" onclick="this.style.display='none'" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; display:none; align-items:center; justify-content:center;"><img id="fullImg" style="max-width:90%; max-height:90%; border:3px solid #ffd700; border-radius:15px; box-shadow:0 0 50px rgba(255,215,0,0.3);"></div>
 
     <script>
+        // Particles
         const container = document.getElementById('particle-container');
         for (let i = 0; i < 30; i++) {
             const p = document.createElement('div');
@@ -218,17 +225,20 @@
         }
 
         let cL = 'en', cD = 'pc';
+        const tutPath = "<code>C:\\Windows\\System32\\drivers\\etc</code>";
+        
         const tuts = {
-            en: "1. Press <b>Win+R</b> and type <code>C:\\Windows\\System32\\drivers\\etc</code><br>2. Edit <b>hosts</b> with Notepad.<br>3. Paste the IPs below and Save.",
-            id: "1. Tekan <b>Win+R</b> dan ketik <code>C:\\Windows\\System32\\drivers\\etc</code><br>2. Edit <b>hosts</b> dengan Notepad.<br>3. Tempel IP di bawah ini dan Simpan.",
-            lt: "1. Spauskite <b>Win+R</b> ir įrašykite <code>C:\\Windows\\System32\\drivers\\etc</code><br>2. Atidarykite <b>hosts</b> su Notepad.<br>3. Įklijuokite IP apačioje.",
-            ru: "1. Нажмите <b>Win+R</b> и введите <code>C:\\Windows\\System32\\drivers\\etc</code><br>2. Откройте <b>hosts</b> через Блокнот.<br>3. Вставьте IP строки в конец."
+            en: `1. Press <b>Win+R</b> and type ${tutPath}<br>2. Edit <b>hosts</b> with Notepad.<br>3. Paste the IPs below and Save.`,
+            id: `1. Tekan <b>Win+R</b> dan ketik ${tutPath}<br>2. Edit <b>hosts</b> dengan Notepad.<br>3. Tempel IP di bawah ini dan Simpan.`,
+            lt: `1. Spauskite <b>Win+R</b> ir įrašykite ${tutPath}<br>2. Atidarykite <b>hosts</b> su Notepad.<br>3. Įklijuokite IP apačioje.`,
+            ru: `1. Нажмите <b>Win+R</b> и введите ${tutPath}<br>2. Откройте <b>hosts</b> через Блокнот.<br>3. Вставьте IP строки в конец.`
         };
+
         const mobileTuts = {
-            en: { android: "1. Download PowerTunnel.<br>2. Enable Hosts Plugin.<br>3. Use the Host File link below.", ios: "1. Download Surge 5.<br>2. New Profile -> Edit in Text Mode.<br>3. Paste the host configuration." },
-            id: { android: "1. Unduh PowerTunnel.<br>2. Aktifkan Plugin Hosts.<br>3. Klik tombol di bawah.", ios: "1. Unduh Surge 5.<br>2. Mode Teks.<br>3. Tempel konfigurasi." },
-            lt: { android: "1. Atsisiųskite PowerTunnel.<br>2. Įjunkite Hosts įskiepį.<br>3. Gaukite nuorodą.", ios: "1. Atsisiųskite Surge 5.<br>2. Teksto režimas.<br>3. Įklijuokite nustatymus." },
-            ru: { android: "1. Скачайте PowerTunnel.<br>2. Включите плагин.<br>3. Нажмите кнопку.", ios: "1. Установите Surge 5.<br>2. Текстовый режим.<br>3. Вставьте конфиг." }
+            en: { android: "1. Download PowerTunnel.<br>2. Enable Hosts Plugin.<br>3. Click the button below to get link.", ios: "1. Download Surge 5.<br>2. New Profile -> Edit in Text Mode.<br>3. Paste the host configuration." },
+            id: { android: "1. Unduh PowerTunnel.<br>2. Aktifkan Plugin Hosts.<br>3. Klik tombol di bawah ini.", ios: "1. Unduh Surge 5.<br>2. Mode Teks.<br>3. Tempel konfigurasi dari link." },
+            lt: { android: "1. Atsisiųskite PowerTunnel.<br>2. Įjunkite Hosts įskiepį.<br>3. Gaukite Hosts nuorodą žemiau.", ios: "1. Atsisiųskite Surge 5.<br>2. Naujas profilis -> Teksto režimas." },
+            ru: { android: "1. Скачайте PowerTunnel.<br>2. Включите плагин Hosts.<br>3. Нажмите кнопку ниже.", ios: "1. Установите Surge 5.<br>2. Новый профиль -> Редактировать." }
         };
 
         function toggleOverlay(id, s) { 
