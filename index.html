@@ -2,13 +2,14 @@
 <html>
 <head>
     <title>GTGT | Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;800&display=swap');
 
         :root {
-            /* The EXACT transparency from your GTGT main board */
             --glass-bg: rgba(255, 255, 255, 0.12);
             --glass-blur: blur(25px);
+            --gold: #ffd700;
         }
 
         /* --- Global Setup --- */
@@ -36,6 +37,10 @@
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
         @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+        @keyframes toastIn {
+            0% { transform: translate(-50%, -100%); opacity: 0; }
+            100% { transform: translate(-50%, 20px); opacity: 1; }
+        }
 
         /* --- UI Elements --- */
         .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
@@ -43,7 +48,6 @@
 
         .main-container { display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 10; animation: float 6s ease-in-out infinite; }
         
-        /* THE GLASS STYLE - Applied to ALL Boards equally */
         .glass-board {
             background: var(--glass-bg) !important; 
             border: 2px solid rgba(255, 215, 0, 0.3); 
@@ -61,6 +65,15 @@
             background: linear-gradient(to bottom, #fff700 0%, #ffcc00 50%, #ff9900 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             animation: goldGlow 3s ease-in-out infinite; line-height: 1;
+        }
+
+        /* --- Toast Notification --- */
+        #toast {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: black; padding: 12px 25px;
+            border-radius: 50px; font-weight: 800; z-index: 3000;
+            display: none; animation: toastIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         /* --- Buttons --- */
@@ -125,23 +138,20 @@
         @media (max-width: 768px) {
             h1 { font-size: 4rem; }
             .box { padding: 30px 20px; }
-            .glass-board[style] { width: 90vw !important; padding: 25px 20px !important; } /* Force pop-ups to shrink on mobile */
-            .why-play { grid-template-columns: 1fr; } /* Stack cards into a single column */
-            
-            /* Move screenshots to the bottom middle horizontally */
+            .glass-board[style] { width: 90vw !important; padding: 25px 20px !important; }
+            .why-play { grid-template-columns: 1fr; }
             .screenshot-stack { flex-direction: row; left: 50%; transform: translateX(-50%); bottom: 15px; }
             .ss-thumb { width: 90px; height: 50px; }
-            .ss-thumb:hover { transform: scale(1.1) translateY(-10px); } /* Jump up instead of right on mobile */
-
-            /* Move FAQ to top right so it doesn't block thumb controls */
+            .ss-thumb:hover { transform: scale(1.1) translateY(-10px); }
             .faq-trigger { top: 20px; right: 20px; bottom: auto; padding: 8px 20px; font-size: 0.8rem; }
             .close-x { top: 15px; right: 25px; font-size: 2.5rem; }
-
             .shop-btn { font-size: 0.85rem; padding: 15px; }
         }
     </style>
 </head>
 <body>
+
+    <div id="toast">COPIED TO CLIPBOARD!</div>
 
     <div class="particles" id="particle-container"></div>
 
@@ -241,7 +251,47 @@
     <div id="imgViewer" onclick="this.style.display='none'" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; display:none; align-items:center; justify-content:center;"><img id="fullImg" style="max-width:90%; max-height:90%; border:3px solid #ffd700; border-radius:15px; box-shadow:0 0 50px rgba(255,215,0,0.3);"></div>
 
     <script>
-        // Particles
+        // --- NATIVE SOUND ENGINE ---
+        let audioCtx;
+        function playClickSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                // Starts at a high pitch and quickly drops to create a satisfying "pop"
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.05);
+                
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime); // Keep volume balanced
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch(e) { console.log("Audio not supported"); }
+        }
+
+        // Attach sound to anything clickable automatically
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn, .pill, .close-x, .ss-thumb, .faq-trigger, .shop-btn')) {
+                playClickSound();
+            }
+        });
+
+        // --- TOAST NOTIFICATION ---
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.style.display = 'block';
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; t.style.opacity = '1'; }, 500); }, 2500);
+        }
+
+        // --- PARTICLES ---
         const container = document.getElementById('particle-container');
         for (let i = 0; i < 30; i++) {
             const p = document.createElement('div');
@@ -253,6 +303,7 @@
             container.appendChild(p);
         }
 
+        // --- UI LOGIC ---
         let cL = 'en', cD = 'pc';
         const tutPath = "<code>C:\\Windows\\System32\\drivers\\etc</code>";
         
@@ -283,11 +334,14 @@
                 document.getElementById('tText').innerHTML = tuts[cL];
                 h.style.display = 'block';
                 b.innerText = "COPY IPs";
-                b.onclick = () => { navigator.clipboard.writeText("91.134.85.13 growtopia1.com\n91.134.85.13 growtopia2.com\n91.134.85.13 www.growtopia1.com\n91.134.85.13 www.growtopia2.com"); b.innerText = "COPIED!"; setTimeout(()=>b.innerText="COPY IPs", 2000); };
+                b.onclick = () => { 
+                    navigator.clipboard.writeText("91.134.85.13 growtopia1.com\n91.134.85.13 growtopia2.com\n91.134.85.13 www.growtopia1.com\n91.134.85.13 www.growtopia2.com"); 
+                    showToast(); // Triggers the visual toast instead of changing button text
+                };
             } else {
                 document.getElementById('tText').innerHTML = mobileTuts[cL][cD];
                 h.style.display = 'none';
-                b.innerText = "GET HOSTS";
+                b.innerText = "GET HOSTS LINK";
                 b.onclick = () => window.open(cD === 'android' ? "https://dash.gtps.cloud/android/50" : "https://dash.gtps.cloud/ios/50");
             }
         }
